@@ -1,51 +1,21 @@
-"use client";
-
-import { createClient } from "@/lib/supabase/client";
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createNote } from "@/app/notes/_actions";
-import { Note } from "@/types/note";
+import { createClient } from "@/lib/supabase/server";
 import { SubmitButton } from "@/components/SubmitButton";
+import type { QueryData } from "@supabase/supabase-js";
 
-export default function Home() {
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+export default async function Home() {
+  const supabase = await createClient();
+  const query = supabase
+    .from("notes")
+    .select()
+    .order("created_at", { ascending: false });
 
-  useEffect(() => {
-    const fetchNotes = async () => {
-      try {
-        const query = supabase
-          .from("notes")
-          .select()
-          .order("created_at", { ascending: false });
-
-        const { data, error } = await query;
-
-        if (error) {
-          console.error("Failed to load notes:", error);
-        } else {
-          setNotes(data || []);
-        }
-      } catch (err) {
-        console.error("Failed to load notes:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchNotes();
-  }, [supabase]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <div className="text-lg text-gray-600">Loading notes...</div>
-        </div>
-      </div>
-    );
-  }
+  const { data: notes } = await query;
+  
+  // QueryDataで正確な型を取得
+  type NotesData = QueryData<typeof query>;
+  const notesData: NotesData = notes || [];
 
   return (
     <main className="min-h-screen bg-gray-50 py-8">
@@ -55,8 +25,7 @@ export default function Home() {
             Simple Notes App
           </h1>
           <p className="text-gray-600">
-            v4.0-useformstatus-introduced: Modern loading state with
-            useFormStatus
+            v5.0-tests-updated: Complete Server Components + Server Actions architecture
           </p>
         </div>
 
@@ -78,7 +47,7 @@ export default function Home() {
           </form>
         </div>
 
-        {notes.length === 0 ? (
+        {notesData.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
             <div className="text-gray-500">
               <svg
@@ -103,42 +72,24 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              Your Notes ({notes.length})
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Your Notes ({notesData.length})
             </h2>
-            <div className="space-y-3">
-              {notes.map((note) => (
-                <div key={note.id}>
-                  <Link
-                    href={`/notes/${note.id}`}
-                    className="block p-6 border border-gray-200 rounded-lg bg-gray-50 hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 group"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <p className="text-lg text-gray-900 mb-2 group-hover:text-blue-600 transition-colors leading-relaxed">
-                          {note.content}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Created: {new Date(note.created_at).toLocaleString()}
-                        </p>
-                      </div>
-                      <svg
-                        className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0 ml-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </div>
-                  </Link>
-                </div>
+            <div className="grid gap-4">
+              {notesData.map((note) => (
+                <Link
+                  key={note.id}
+                  href={`/notes/${note.id}`}
+                  className="block bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
+                >
+                  <div className="flex justify-between items-start">
+                    <p className="text-gray-900 flex-1 mr-4">{note.content}</p>
+                    <time className="text-sm text-gray-500 whitespace-nowrap">
+                      {new Date(note.created_at).toLocaleDateString()}
+                    </time>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>

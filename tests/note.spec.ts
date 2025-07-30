@@ -27,7 +27,7 @@ test("should display the app title and version info", async ({ page }) => {
   await expect(page.getByText("Simple Notes App")).toBeVisible();
   await expect(
     page.getByText(
-      "v4.0-useformstatus-introduced: Modern loading state with useFormStatus"
+      "v5.0-tests-updated: Complete Server Components + Server Actions architecture"
     )
   ).toBeVisible();
 });
