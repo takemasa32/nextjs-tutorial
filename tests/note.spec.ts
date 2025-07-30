@@ -10,12 +10,18 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 test.beforeEach(async () => {
   // Clear all existing notes before each test - use gt 0 to match all records
-  await supabase.from("notes").delete().gt("id", "00000000-0000-0000-0000-000000000000");
+  await supabase
+    .from("notes")
+    .delete()
+    .gt("id", "00000000-0000-0000-0000-000000000000");
 });
 
 test.afterEach(async () => {
   // Clean up after each test
-  await supabase.from("notes").delete().gt("id", "00000000-0000-0000-0000-000000000000");
+  await supabase
+    .from("notes")
+    .delete()
+    .gt("id", "00000000-0000-0000-0000-000000000000");
 });
 
 test("should display the app title and version info", async ({ page }) => {
@@ -33,7 +39,7 @@ test("should display notes", async ({ page }) => {
   const timestamp = Date.now();
   const note1Content = `Test Note 1 - ${timestamp}`;
   const note2Content = `Test Note 2 - ${timestamp}`;
-  
+
   await supabase
     .from("notes")
     .insert([{ content: note1Content }, { content: note2Content }]);
@@ -76,12 +82,15 @@ test("should show error for empty note", async ({ page }) => {
 
 test("should show empty state when no notes exist", async ({ page }) => {
   // Ensure database is completely clean
-  await supabase.from("notes").delete().gt("id", "00000000-0000-0000-0000-000000000000");
-  
+  await supabase
+    .from("notes")
+    .delete()
+    .gt("id", "00000000-0000-0000-0000-000000000000");
+
   await page.goto("/");
-  
+
   // Wait for loading to complete
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState("networkidle");
 
   // Should show empty state message
   await expect(page.getByText("No notes yet")).toBeVisible();
@@ -117,11 +126,11 @@ test("should navigate to note detail page when clicking on a note", async ({
   // First, create a note to ensure we have data
   const timestamp = Date.now();
   const noteContent = `Clickable test note - ${timestamp}`;
-  
+
   await supabase.from("notes").insert([{ content: noteContent }]);
 
   await page.goto("/");
-  
+
   // Wait for the note to be visible
   await expect(page.getByText(noteContent)).toBeVisible();
 
@@ -138,11 +147,11 @@ test("should navigate back from note detail page", async ({ page }) => {
   // Create a note first
   const timestamp = Date.now();
   const noteContent = `Navigation test note - ${timestamp}`;
-  
+
   await supabase.from("notes").insert([{ content: noteContent }]);
 
   await page.goto("/");
-  
+
   // Wait for the note to be visible
   await expect(page.getByText(noteContent)).toBeVisible();
 

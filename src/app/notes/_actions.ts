@@ -1,6 +1,6 @@
 "use server";
 
-import { createServerComponentClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -13,7 +13,7 @@ export async function createNote(formData: FormData) {
   }
 
   // データベース操作
-  const supabase = createServerComponentClient();
+  const supabase = await createClient();
   const { error } = await supabase
     .from("notes")
     .insert({ content: content.trim() });

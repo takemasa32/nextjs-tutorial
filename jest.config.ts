@@ -22,7 +22,7 @@ const config: Config = {
     "<rootDir>/tests/", // Playwright tests are excluded from Jest
   ],
   transformIgnorePatterns: [
-    "node_modules/(?!(isows|@supabase|@babel|@jest).*)"
+    "node_modules/(?!(isows|@supabase|@babel|@jest).*)",
   ],
 };
 

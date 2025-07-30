@@ -15,7 +15,7 @@ const mockCreateClient = createClient as jest.MockedFunction<
 describe("/api/notes/create", () => {
   // テスト中のconsole.errorを抑制
   const originalConsoleError = console.error;
-  
+
   beforeAll(() => {
     console.error = jest.fn();
   });
