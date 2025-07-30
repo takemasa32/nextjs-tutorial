@@ -9,10 +9,12 @@ const baseURL = `http://localhost:${PORT}`;
 
 export default defineConfig({
   testDir: "./tests",
-  fullyParallel: true,
+  /* Run tests in files in parallel */
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : "50%",
+  /* Opt out of parallel tests on CI. */
+  workers: 1,
   reporter: [["html", { open: "never" }]],
   use: {
     baseURL,

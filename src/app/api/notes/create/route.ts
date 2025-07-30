@@ -1,16 +1,16 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
-import { CreateNoteRequest, CreateNoteResponse } from '@/types/note'
+import { CreateNoteRequest, CreateNoteResponse } from "@/types/note";
 
 export async function POST(request: NextRequest) {
   try {
     const body: CreateNoteRequest = await request.json();
-    
-    if (!body.content || body.content.trim() === '') {
+
+    if (!body.content || body.content.trim() === "") {
       return NextResponse.json<CreateNoteResponse>(
-        { success: false, error: 'Content is required' },
+        { success: false, error: "Content is required" },
         { status: 400 }
-      )
+      );
     }
 
     const supabase = await createClient();
@@ -22,22 +22,22 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Supabase error:', error)
+      console.error("Supabase error:", error);
       return NextResponse.json<CreateNoteResponse>(
-        { success: false, error: 'Failed to create note' },
+        { success: false, error: "Failed to create note" },
         { status: 500 }
       );
     }
 
     return NextResponse.json<CreateNoteResponse>({
       success: true,
-      note: data
+      note: data,
     });
   } catch (error) {
-    console.error('API error:', error)
+    console.error("API error:", error);
     return NextResponse.json<CreateNoteResponse>(
-      { success: false, error: 'Internal server error' },
+      { success: false, error: "Internal server error" },
       { status: 500 }
-    )
+    );
   }
 }

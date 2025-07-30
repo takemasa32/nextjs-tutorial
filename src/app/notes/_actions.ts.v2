@@ -1,29 +1,29 @@
-'use server'
+"use server";
 
-import { createServerComponentClient } from '@/lib/supabase/server'
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
+import { createServerComponentClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function createNote(formData: FormData) {
-  const content = formData.get('content') as string
-  
+  const content = formData.get("content") as string;
+
   // バリデーション
   if (!content?.trim()) {
-    throw new Error('Content is required')
+    throw new Error("Content is required");
   }
 
   // データベース操作
-  const supabase = createServerComponentClient()
+  const supabase = createServerComponentClient();
   const { error } = await supabase
-    .from('notes')
-    .insert({ content: content.trim() })
+    .from("notes")
+    .insert({ content: content.trim() });
 
   if (error) {
-    console.error('Supabase error:', error)
-    throw new Error('Failed to create note')
+    console.error("Supabase error:", error);
+    throw new Error("Failed to create note");
   }
 
   // キャッシュ無効化とリダイレクト
-  revalidatePath('/')
-  redirect('/')
+  revalidatePath("/");
+  redirect("/");
 }

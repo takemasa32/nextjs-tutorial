@@ -2,7 +2,7 @@
 
 ## 概要
 
-Next.jsとSupabaseを用いたメモ管理アプリケーションです。講義の進行に合わせて、伝統的な実装からモダンな実装へと段階的にリファクタリングを行うことで、実践的な開発プロセスを体験できます。
+Next.js と Supabase を用いたメモ管理アプリケーションです。講義の進行に合わせて、伝統的な実装からモダンな実装へと段階的にリファクタリングを行うことで、実践的な開発プロセスを体験できます。
 
 ## 技術スタック
 
@@ -10,7 +10,7 @@ Next.jsとSupabaseを用いたメモ管理アプリケーションです。講�
 - **言語**: TypeScript
 - **データベース**: Supabase (PostgreSQL)
 - **スタイリング**: Tailwind CSS
-- **テスト**: Jest (単体テスト), Playwright (E2Eテスト)
+- **テスト**: Jest (単体テスト), Playwright (E2E テスト)
 
 ## セットアップ手順
 
@@ -28,13 +28,13 @@ npm install
 cp .env.local.example .env.local
 ```
 
-### 3. Supabaseローカル環境の起動
+### 3. Supabase ローカル環境の起動
 
 ```bash
 npm run supabase:start
 ```
 
-初回起動時に表示されるURL、API KEYを`.env.local`に設定してください。
+初回起動時に表示される URL、API KEY を`.env.local`に設定してください。
 
 ### 4. 開発サーバーの起動
 
@@ -58,7 +58,7 @@ npm test
 npm run test:unit
 ```
 
-### E2Eテストのみ
+### E2E テストのみ
 
 ```bash
 npm run test:e2e
@@ -69,9 +69,9 @@ npm run test:e2e
 このプロジェクトは以下のバージョンタグで管理されています：
 
 - `v1.0-initial`: 伝統的な実装（API Routes + useState）
-- `v2.0-action-created`: Server Actionの追加
-- `v3.0-form-refactored`: フォームのServer Action対応
-- `v4.0-useformstatus-introduced`: useFormStatusの導入
+- `v2.0-action-created`: Server Action の追加
+- `v3.0-form-refactored`: フォームの Server Action 対応
+- `v4.0-useformstatus-introduced`: useFormStatus の導入
 - `v5.0-tests-updated`: テストの更新
 
 各バージョンの詳細は `/doc/README.md` を参照してください。
@@ -98,8 +98,8 @@ doc/                               # プロジェクトドキュメント
 
 ## 学習目標
 
-1. **伝統的なReact開発**: useStateによる状態管理、fetch APIの使用
-2. **モダンなNext.js開発**: Server Actions、useFormStatusの活用
+1. **伝統的な React 開発**: useState による状態管理、fetch API の使用
+2. **モダンな Next.js 開発**: Server Actions、useFormStatus の活用
 3. **段階的リファクタリング**: 動作する状態を保ちながらの改善
-4. **テスト駆動開発**: 単体テスト・E2Eテストの実装と活用
-5. **実用的な開発プロセス**: Gitタグを活用したバージョン管理
+4. **テスト駆動開発**: 単体テスト・E2E テストの実装と活用
+5. **実用的な開発プロセス**: Git タグを活用したバージョン管理

@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
 import { createClient } from "@/lib/supabase/client";
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { Note, CreateNoteResponse } from '@/types/note'
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Note, CreateNoteResponse } from "@/types/note";
 
 export default function Home() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [newNoteContent, setNewNoteContent] = useState('');
+  const [newNoteContent, setNewNoteContent] = useState("");
   const [error, setError] = useState<string | null>(null);
   const supabase = createClient();
 
@@ -19,15 +19,15 @@ export default function Home() {
         const { data, error } = await supabase
           .from("notes")
           .select()
-          .order('created_at', { ascending: false });
-        
+          .order("created_at", { ascending: false });
+
         if (error) {
-          setError('Failed to load notes');
+          setError("Failed to load notes");
         } else {
           setNotes(data || []);
         }
       } catch {
-        setError('Failed to load notes');
+        setError("Failed to load notes");
       } finally {
         setLoading(false);
       }
@@ -38,9 +38,9 @@ export default function Home() {
 
   const handleCreateNote = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!newNoteContent.trim()) {
-      setError('Note content is required');
+      setError("Note content is required");
       return;
     }
 
@@ -48,10 +48,10 @@ export default function Home() {
     setError(null);
 
     try {
-      const res = await fetch('/api/notes/create', {
-        method: 'POST',
+      const res = await fetch("/api/notes/create", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ content: newNoteContent }),
       });
@@ -60,12 +60,12 @@ export default function Home() {
 
       if (result.success && result.note) {
         setNotes([result.note, ...notes]);
-        setNewNoteContent('');
+        setNewNoteContent("");
       } else {
-        setError(result.error || 'Failed to create note');
+        setError(result.error || "Failed to create note");
       }
     } catch {
-      setError('Failed to create note');
+      setError("Failed to create note");
     } finally {
       setSubmitting(false);
     }
@@ -86,8 +86,12 @@ export default function Home() {
     <main className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Simple Notes App</h1>
-          <p className="text-gray-600">v1.0-initial: Traditional API Routes + fetch implementation</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            Simple Notes App
+          </h1>
+          <p className="text-gray-600">
+            v1.0-initial: Traditional API Routes + fetch implementation
+          </p>
         </div>
 
         {error && (
@@ -97,7 +101,9 @@ export default function Home() {
         )}
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Create New Note</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            Create New Note
+          </h2>
           <form onSubmit={handleCreateNote}>
             <div className="flex gap-3">
               <input
@@ -109,12 +115,12 @@ export default function Home() {
                 disabled={submitting}
                 required
               />
-              <button 
-                type="submit" 
-                disabled={submitting || !newNoteContent.trim()} 
+              <button
+                type="submit"
+                disabled={submitting || !newNoteContent.trim()}
                 className="px-6 py-3 bg-blue-500 text-white rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors font-medium"
               >
-                {submitting ? 'Creating...' : 'Add Note'}
+                {submitting ? "Creating..." : "Add Note"}
               </button>
             </div>
           </form>
@@ -123,37 +129,60 @@ export default function Home() {
         {notes.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
             <div className="text-gray-500">
-              <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              <svg
+                className="mx-auto h-12 w-12 text-gray-400 mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
               </svg>
-              <p className="text-lg font-medium text-gray-900 mb-1">No notes yet</p>
-              <p className="text-gray-600">Create your first note above to get started!</p>
+              <p className="text-lg font-medium text-gray-900 mb-1">
+                No notes yet
+              </p>
+              <p className="text-gray-600">
+                Create your first note above to get started!
+              </p>
             </div>
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Your Notes ({notes.length})</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Your Notes ({notes.length})
+            </h2>
             <div className="space-y-3">
               {notes.map((note) => (
                 <div key={note.id}>
-                  <Link 
+                  <Link
                     href={`/notes/${note.id}`}
                     className="block p-6 border border-gray-200 rounded-lg bg-gray-50 hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 group"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <p className="text-lg text-gray-900 mb-2 group-hover:text-blue-600 transition-colors leading-relaxed">{note.content}</p>
+                        <p className="text-lg text-gray-900 mb-2 group-hover:text-blue-600 transition-colors leading-relaxed">
+                          {note.content}
+                        </p>
                         <p className="text-sm text-gray-500">
                           Created: {new Date(note.created_at).toLocaleString()}
                         </p>
                       </div>
-                      <svg 
-                        className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0 ml-2" 
-                        fill="none" 
-                        stroke="currentColor" 
+                      <svg
+                        className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0 ml-2"
+                        fill="none"
+                        stroke="currentColor"
                         viewBox="0 0 24 24"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
                       </svg>
                     </div>
                   </Link>

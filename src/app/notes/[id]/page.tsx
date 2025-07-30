@@ -1,54 +1,54 @@
-'use client'
+"use client";
 
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import type { Note } from '@/types/note'
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import type { Note } from "@/types/note";
 
 interface NoteDetailPageProps {
   params: Promise<{
-    id: string
-  }>
+    id: string;
+  }>;
 }
 
 export default function NoteDetailPage({ params }: NoteDetailPageProps) {
-  const router = useRouter()
-  const [note, setNote] = useState<Note | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const router = useRouter();
+  const [note, setNote] = useState<Note | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchNote = async () => {
       try {
-        setIsLoading(true)
-        setError(null)
+        setIsLoading(true);
+        setError(null);
 
-        const { id } = await params
-        const supabase = createClient()
+        const { id } = await params;
+        const supabase = createClient();
         const { data, error: supabaseError } = await supabase
-          .from('notes')
-          .select('*')
-          .eq('id', id)
-          .single()
+          .from("notes")
+          .select("*")
+          .eq("id", id)
+          .single();
 
         if (supabaseError) {
-          throw new Error('Note not found')
+          throw new Error("Note not found");
         }
 
-        setNote(data)
+        setNote(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch note')
+        setError(err instanceof Error ? err.message : "Failed to fetch note");
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
-    fetchNote()
-  }, [params])
+    fetchNote();
+  }, [params]);
 
   const handleBack = () => {
-    router.push('/')
-  }
+    router.push("/");
+  };
 
   if (isLoading) {
     return (
@@ -70,8 +70,18 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
                   onClick={handleBack}
                   className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
                   </svg>
                   Back to Notes
                 </button>
@@ -95,7 +105,7 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -118,8 +128,18 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
                   onClick={handleBack}
                   className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
                   </svg>
                   Back to Notes
                 </button>
@@ -130,16 +150,24 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
             <div className="bg-white rounded-xl shadow-lg p-6">
               <div className="text-center">
                 <div className="mb-4">
-                  <svg className="mx-auto h-12 w-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 15.5c-.77.833.192 2.5 1.732 2.5z" />
+                  <svg
+                    className="mx-auto h-12 w-12 text-red-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 15.5c-.77.833.192 2.5 1.732 2.5z"
+                    />
                   </svg>
                 </div>
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">
                   Error Loading Note
                 </h2>
-                <p className="text-gray-600 mb-6">
-                  {error}
-                </p>
+                <p className="text-gray-600 mb-6">{error}</p>
                 <button
                   onClick={handleBack}
                   className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
@@ -151,7 +179,7 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (!note) {
@@ -174,8 +202,18 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
                   onClick={handleBack}
                   className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
                   </svg>
                   Back to Notes
                 </button>
@@ -189,7 +227,8 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
                   Note Not Found
                 </h2>
                 <p className="text-gray-600 mb-6">
-                  The note you&apos;re looking for doesn&apos;t exist or has been deleted.
+                  The note you&apos;re looking for doesn&apos;t exist or has
+                  been deleted.
                 </p>
                 <button
                   onClick={handleBack}
@@ -202,7 +241,7 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -224,8 +263,18 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
                 onClick={handleBack}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
                 </svg>
                 Back to Notes
               </button>
@@ -240,12 +289,13 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
                 Note Details
               </h2>
               <p className="text-sm text-gray-600">
-                Created: {new Date(note.created_at).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
+                Created:{" "}
+                {new Date(note.created_at).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
                 })}
               </p>
             </div>
@@ -284,5 +334,5 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
