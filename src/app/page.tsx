@@ -73,62 +73,76 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-lg">Loading notes...</div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <div className="text-lg text-gray-600">Loading notes...</div>
+        </div>
       </div>
     );
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="w-full max-w-5xl">
-        <h1 className="text-4xl font-bold mb-8">Simple Notes App</h1>
-        <p className="text-gray-600 mb-8">v1.0-initial: Traditional API Routes + fetch implementation</p>
+    <main className="min-h-screen bg-gray-50 py-8">
+      <div className="container mx-auto px-4 max-w-4xl">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Simple Notes App</h1>
+          <p className="text-gray-600">v1.0-initial: Traditional API Routes + fetch implementation</p>
+        </div>
 
         {error && (
-          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleCreateNote} className="mb-8">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={newNoteContent}
-              onChange={(e) => setNewNoteContent(e.target.value)}
-              placeholder="Enter your note content..."
-              className="flex-1 p-3 border rounded-lg text-black"
-              disabled={submitting}
-              required
-            />
-            <button 
-              type="submit" 
-              disabled={submitting || !newNoteContent.trim()} 
-              className="px-6 py-3 bg-blue-500 text-white rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
-            >
-              {submitting ? 'Creating...' : 'Add Note'}
-            </button>
-          </div>
-        </form>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Create New Note</h2>
+          <form onSubmit={handleCreateNote}>
+            <div className="flex gap-3">
+              <input
+                type="text"
+                value={newNoteContent}
+                onChange={(e) => setNewNoteContent(e.target.value)}
+                placeholder="Enter your note content..."
+                className="flex-1 p-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+                disabled={submitting}
+                required
+              />
+              <button 
+                type="submit" 
+                disabled={submitting || !newNoteContent.trim()} 
+                className="px-6 py-3 bg-blue-500 text-white rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors font-medium"
+              >
+                {submitting ? 'Creating...' : 'Add Note'}
+              </button>
+            </div>
+          </form>
+        </div>
 
         {notes.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            No notes yet. Create your first note above!
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+            <div className="text-gray-500">
+              <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <p className="text-lg font-medium text-gray-900 mb-1">No notes yet</p>
+              <p className="text-gray-600">Create your first note above to get started!</p>
+            </div>
           </div>
         ) : (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold mb-4">Your Notes ({notes.length})</h2>
-            <ul className="space-y-4">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Your Notes ({notes.length})</h2>
+            <div className="space-y-3">
               {notes.map((note) => (
-                <li key={note.id}>
+                <div key={note.id}>
                   <Link 
                     href={`/notes/${note.id}`}
-                    className="block p-4 border rounded-lg bg-white shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-200 group"
+                    className="block p-6 border border-gray-200 rounded-lg bg-gray-50 hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 group"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <p className="text-lg mb-2 group-hover:text-blue-600 transition-colors">{note.content}</p>
+                        <p className="text-lg text-gray-900 mb-2 group-hover:text-blue-600 transition-colors leading-relaxed">{note.content}</p>
                         <p className="text-sm text-gray-500">
                           Created: {new Date(note.created_at).toLocaleString()}
                         </p>
@@ -143,9 +157,9 @@ export default function Home() {
                       </svg>
                     </div>
                   </Link>
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         )}
       </div>
