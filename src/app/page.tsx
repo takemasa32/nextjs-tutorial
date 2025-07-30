@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createNote } from "@/app/notes/_actions";
 import { Note } from "@/types/note";
+import { SubmitButton } from "@/components/SubmitButton";
 
 export default function Home() {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -21,17 +22,18 @@ export default function Home() {
 
         const { data, error } = await query;
 
-      if (error) {
-        console.error("Failed to load notes:", error);
-      } else {
-        setNotes(data || []);
+        if (error) {
+          console.error("Failed to load notes:", error);
+        } else {
+          setNotes(data || []);
+        }
+      } catch (err) {
+        console.error("Failed to load notes:", err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Failed to load notes:", err);
-    } finally {
-      setLoading(false);
-    }
-  };    fetchNotes();
+    };
+    fetchNotes();
   }, [supabase]);
 
   if (loading) {
@@ -53,7 +55,8 @@ export default function Home() {
             Simple Notes App
           </h1>
           <p className="text-gray-600">
-            v3.0-form-refactored: Server Actions + form action implementation
+            v4.0-useformstatus-introduced: Modern loading state with
+            useFormStatus
           </p>
         </div>
 
@@ -70,12 +73,7 @@ export default function Home() {
                 className="flex-1 p-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 required
               />
-              <button
-                type="submit"
-                className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
-              >
-                Add Note
-              </button>
+              <SubmitButton />
             </div>
           </form>
         </div>

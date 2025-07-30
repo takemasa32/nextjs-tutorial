@@ -22,7 +22,7 @@ const mockSupabase = {
 describe("Server Actions - createNote", () => {
   // テスト中のconsole.errorを抑制
   const originalConsoleError = console.error;
-  
+
   beforeAll(() => {
     console.error = jest.fn();
   });

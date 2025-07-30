@@ -27,7 +27,7 @@ test("should display the app title and version info", async ({ page }) => {
   await expect(page.getByText("Simple Notes App")).toBeVisible();
   await expect(
     page.getByText(
-      "v3.0-form-refactored: Server Actions + form action implementation"
+      "v4.0-useformstatus-introduced: Modern loading state with useFormStatus"
     )
   ).toBeVisible();
 });
@@ -76,7 +76,7 @@ test("should show error for empty note", async ({ page }) => {
   // Try to submit without content - Server Actions will handle validation server-side
   const addButton = page.getByRole("button", { name: "Add Note" });
   await addButton.click();
-  
+
   // With Server Actions, the page should remain the same (no note created)
   // We verify by checking that no error appeared and form remained
   await expect(page.getByText("Simple Notes App")).toBeVisible();

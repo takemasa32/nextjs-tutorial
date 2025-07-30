@@ -15,11 +15,11 @@ export async function createNote(formData: FormData) {
 
   // データベース操作
   const supabase = await createClient();
-  
+
   // 型安全なクエリ定義
-  const insertData: Pick<NoteInsert, 'content'> = { content: content.trim() };
+  const insertData: Pick<NoteInsert, "content"> = { content: content.trim() };
   const query = supabase.from("notes").insert(insertData);
-  
+
   const { error } = await query;
 
   if (error) {
