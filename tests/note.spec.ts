@@ -29,7 +29,7 @@ test("should display the app title and version info", async ({ page }) => {
   await expect(page.getByText("Simple Notes App")).toBeVisible();
   await expect(
     page.getByText(
-      "v3.0-form-refactored: Server Actions + form action implementation"
+      "v2.0-action-created: Server Actions created, UI still uses API Routes"
     )
   ).toBeVisible();
 });
@@ -75,13 +75,9 @@ test("should show error for empty note", async ({ page }) => {
   // Wait for page to load
   await expect(page.getByText("Simple Notes App")).toBeVisible();
 
-  // Try to submit without content - Server Actions will handle validation server-side
+  // Try to submit without content - button should be disabled
   const addButton = page.getByRole("button", { name: "Add Note" });
-  await addButton.click();
-  
-  // With Server Actions, the page should remain the same (no note created)
-  // We verify by checking that no error appeared and form remained
-  await expect(page.getByText("Create New Note")).toBeVisible();
+  await expect(addButton).toBeDisabled();
 });
 
 test("should show empty state when no notes exist", async ({ page }) => {

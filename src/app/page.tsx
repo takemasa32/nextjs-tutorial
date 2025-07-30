@@ -3,12 +3,13 @@
 import { createClient } from "@/lib/supabase/client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Note } from "@/types/note";
-import { createNote } from "@/app/notes/_actions";
+import { Note, CreateNoteResponse } from "@/types/note";
 
 export default function Home() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [newNoteContent, setNewNoteContent] = useState("");
   const [error, setError] = useState<string | null>(null);
   const supabase = createClient();
 
@@ -35,6 +36,41 @@ export default function Home() {
     fetchNotes();
   }, [supabase]);
 
+  const handleCreateNote = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!newNoteContent.trim()) {
+      setError("Note content is required");
+      return;
+    }
+
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      const res = await fetch("/api/notes/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content: newNoteContent }),
+      });
+
+      const result: CreateNoteResponse = await res.json();
+
+      if (result.success && result.note) {
+        setNotes([result.note, ...notes]);
+        setNewNoteContent("");
+      } else {
+        setError(result.error || "Failed to create note");
+      }
+    } catch {
+      setError("Failed to create note");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -54,7 +90,7 @@ export default function Home() {
             Simple Notes App
           </h1>
           <p className="text-gray-600">
-            v3.0-form-refactored: Server Actions + form action implementation
+            v2.0-action-created: Server Actions created, UI still uses API Routes
           </p>
         </div>
 
@@ -68,20 +104,23 @@ export default function Home() {
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             Create New Note
           </h2>
-          <form action={createNote}>
+          <form onSubmit={handleCreateNote}>
             <div className="flex gap-3">
               <input
                 type="text"
-                name="content"
+                value={newNoteContent}
+                onChange={(e) => setNewNoteContent(e.target.value)}
                 placeholder="Enter your note content..."
                 className="flex-1 p-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+                disabled={submitting}
                 required
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+                disabled={submitting || !newNoteContent.trim()}
+                className="px-6 py-3 bg-blue-500 text-white rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors font-medium"
               >
-                Add Note
+                {submitting ? "Creating..." : "Add Note"}
               </button>
             </div>
           </form>
