@@ -1,15 +1,12 @@
-// v1.0-initial: Individual type definitions
-// Later versions will use Supabase-generated types
+// Using Supabase-generated types with utilities
+import type { Note as SupabaseNote, NoteInsert } from './utils';
 
-export interface Note {
-  id: string;
-  content: string;
-  created_at: string;
-}
+// Re-export Supabase types
+export type Note = SupabaseNote;
+export type CreateNoteData = Pick<NoteInsert, 'content'>;
 
-export interface CreateNoteRequest {
-  content: string;
-}
+// API request/response types
+export type CreateNoteRequest = CreateNoteData;
 
 export interface CreateNoteResponse {
   success: boolean;

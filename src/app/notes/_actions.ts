@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import type { NoteInsert } from "@/types/utils";
 
 export async function createNote(formData: FormData) {
   const content = formData.get("content") as string;
@@ -14,9 +15,12 @@ export async function createNote(formData: FormData) {
 
   // データベース操作
   const supabase = await createClient();
-  const { error } = await supabase
-    .from("notes")
-    .insert({ content: content.trim() });
+  
+  // 型安全なクエリ定義
+  const insertData: Pick<NoteInsert, 'content'> = { content: content.trim() };
+  const query = supabase.from("notes").insert(insertData);
+  
+  const { error } = await query;
 
   if (error) {
     console.error("Supabase error:", error);

@@ -3,73 +3,36 @@
 import { createClient } from "@/lib/supabase/client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Note, CreateNoteResponse } from "@/types/note";
+import { createNote } from "@/app/notes/_actions";
+import { Note } from "@/types/note";
 
 export default function Home() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [newNoteContent, setNewNoteContent] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const { data, error } = await supabase
+        const query = supabase
           .from("notes")
           .select()
           .order("created_at", { ascending: false });
 
-        if (error) {
-          setError("Failed to load notes");
-        } else {
-          setNotes(data || []);
-        }
-      } catch {
-        setError("Failed to load notes");
-      } finally {
-        setLoading(false);
-      }
-    };
+        const { data, error } = await query;
 
-    fetchNotes();
-  }, [supabase]);
-
-  const handleCreateNote = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!newNoteContent.trim()) {
-      setError("Note content is required");
-      return;
-    }
-
-    setSubmitting(true);
-    setError(null);
-
-    try {
-      const res = await fetch("/api/notes/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ content: newNoteContent }),
-      });
-
-      const result: CreateNoteResponse = await res.json();
-
-      if (result.success && result.note) {
-        setNotes([result.note, ...notes]);
-        setNewNoteContent("");
+      if (error) {
+        console.error("Failed to load notes:", error);
       } else {
-        setError(result.error || "Failed to create note");
+        setNotes(data || []);
       }
-    } catch {
-      setError("Failed to create note");
+    } catch (err) {
+      console.error("Failed to load notes:", err);
     } finally {
-      setSubmitting(false);
+      setLoading(false);
     }
-  };
+  };    fetchNotes();
+  }, [supabase]);
 
   if (loading) {
     return (
@@ -90,37 +53,28 @@ export default function Home() {
             Simple Notes App
           </h1>
           <p className="text-gray-600">
-            v2.0-action-created: Server Actions created, UI still uses API Routes
+            v3.0-form-refactored: Server Actions + form action implementation
           </p>
         </div>
-
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
-            {error}
-          </div>
-        )}
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             Create New Note
           </h2>
-          <form onSubmit={handleCreateNote}>
+          <form action={createNote}>
             <div className="flex gap-3">
               <input
                 type="text"
-                value={newNoteContent}
-                onChange={(e) => setNewNoteContent(e.target.value)}
+                name="content"
                 placeholder="Enter your note content..."
-                className="flex-1 p-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
-                disabled={submitting}
+                className="flex-1 p-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 required
               />
               <button
                 type="submit"
-                disabled={submitting || !newNoteContent.trim()}
-                className="px-6 py-3 bg-blue-500 text-white rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors font-medium"
+                className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
               >
-                {submitting ? "Creating..." : "Add Note"}
+                Add Note
               </button>
             </div>
           </form>
