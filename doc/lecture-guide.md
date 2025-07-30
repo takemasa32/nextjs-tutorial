@@ -301,6 +301,64 @@ type Note = Tables["notes"]["Row"];
 - [Type-safe Data Fetching](https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating)
 - [Testing Next.js Applications](https://nextjs.org/docs/app/building-your-application/testing)
 
+### Phase 5: 完全なServer Components化（v5.0-tests-updated）
+
+**時間**: 40分
+**目的**: セキュリティとパフォーマンスの最適化
+
+#### 5.1 Server Component移行（15分）
+
+**セキュリティの向上**:
+- NEXT_PUBLIC_環境変数の完全削除
+- サーバーサイドのみでのデータベースアクセス
+- 攻撃面の縮小
+
+```typescript
+// Before: Client Component
+"use client";
+import { createClient } from "@/lib/supabase/client";
+
+// After: Server Component  
+import { createClient } from "@/lib/supabase/server";
+
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: notes } = await supabase.from("notes").select();
+  // ...
+}
+```
+
+#### 5.2 API Routes削除（10分）
+
+**アーキテクチャの簡素化**:
+- `/api/notes/create/route.ts`の削除
+- Server Actionsによる完全な代替
+- テストの簡素化
+
+#### 5.3 最終的なアーキテクチャ（15分）
+
+**最適化された構成**:
+- Server Component: 初期データ取得
+- Server Actions: データ更新
+- Client Component: インタラクティブUI（SubmitButtonのみ）
+
+**利点の説明**:
+- **パフォーマンス**: サーバーサイドレンダリング
+- **セキュリティ**: 環境変数の適切な使用
+- **開発体験**: 型安全性の完全実現
+
+---
+
+## 6. バージョン別比較表
+
+| バージョン | データ取得 | データ更新 | 型システム | 環境変数 | テスト |
+|------------|------------|------------|------------|----------|--------|
+| v1.0 | Client (fetch) | API Routes | 個別定義 | NEXT_PUBLIC_ | API + E2E |
+| v2.0 | Client (fetch) | Server Actions | Supabase生成 | 両方併用 | API + SA + E2E |
+| v3.0 | Client (fetch) | Server Actions | Supabase生成 | 両方併用 | SA + E2E |
+| v4.0 | Client (fetch) | Server Actions | Supabase生成 | 両方併用 | SA + E2E |
+| v5.0 | Server Component | Server Actions | Supabase生成 | サーバーのみ | SA + E2E |
+
 ## 評価基準
 
 ### 理解度チェック
