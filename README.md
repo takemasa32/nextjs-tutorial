@@ -46,23 +46,29 @@ npm run dev
 
 ## テストの実行
 
-### 全テストの実行
+### CI環境での自動テスト（GitHub Actions）
 
 ```bash
-npm test
+npm test  # 単体テストのみ実行（Supabaseサーバーが不要）
 ```
 
-### 単体テストのみ
+### ローカル環境での完全テスト
 
 ```bash
+npm run test:all  # 単体テスト + E2Eテスト
+```
+
+### 個別テスト実行
+
+```bash
+# 単体テストのみ
 npm run test:unit
-```
 
-### E2E テストのみ
-
-```bash
+# E2Eテストのみ（ローカル環境のみ）
 npm run test:e2e
 ```
+
+**注意**: E2EテストはSupabaseローカル環境が必要なため、GitHub ActionsなどのCI環境では実行されません。ローカル開発環境での実行を推奨します。
 
 ## 開発バージョン管理
 

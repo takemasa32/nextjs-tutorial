@@ -81,6 +81,12 @@
 - **E2E テスト**: ユーザーインタラクションのテスト
 - **モックの使用法**: Supabase クライアントのモック
 
+**重要**: CI/CD環境での制約
+
+- **GitHub Actions**: E2Eテストは実行されない（Supabaseサーバー不要）
+- **ローカル開発**: すべてのテストが実行可能
+- **テスト分離**: `npm test`（CI用）と`npm run test:all`（ローカル用）
+
 ### Phase 2: Server Actions 導入（v2.0-action-created）
 
 **時間**: 30 分
