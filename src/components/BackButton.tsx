@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 interface BackButtonProps {
   children: React.ReactNode;
   className?: string;
 }
 
-export default function BackButton({ children, className = '' }: BackButtonProps) {
+export default function BackButton({
+  children,
+  className = "",
+}: BackButtonProps) {
   const router = useRouter();
 
   const handleBack = () => {
-    router.push('/');
+    router.push("/");
   };
 
   return (
-    <button
-      onClick={handleBack}
-      className={className}
-    >
+    <button onClick={handleBack} className={className}>
       {children}
     </button>
   );

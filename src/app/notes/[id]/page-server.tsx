@@ -3,9 +3,6 @@ import { createClient } from "@/lib/supabase/server";
 import type { Note } from "@/types/note";
 import BackButton from "@/components/BackButton";
 
-// Force dynamic rendering
-export const dynamic = "force-dynamic";
-
 interface NoteDetailPageProps {
   params: Promise<{
     id: string;

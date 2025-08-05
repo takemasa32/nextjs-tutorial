@@ -1,4 +1,4 @@
-import BackButton from '@/components/BackButton';
+import BackButton from "@/components/BackButton";
 
 export default function NotFound() {
   return (
@@ -57,7 +57,8 @@ export default function NotFound() {
                 Note Not Found
               </h2>
               <p className="text-gray-600 mb-6">
-                The note you&apos;re looking for doesn&apos;t exist or has been deleted.
+                The note you&apos;re looking for doesn&apos;t exist or has been
+                deleted.
               </p>
               <BackButton className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
                 Back to Notes
