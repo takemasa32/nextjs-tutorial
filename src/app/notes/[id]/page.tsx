@@ -1,9 +1,10 @@
-"use client";
+import { notFound } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
+import type { Note } from '@/types/note';
+import BackButton from '@/components/BackButton';
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import type { Note } from "@/types/note";
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 interface NoteDetailPageProps {
   params: Promise<{
@@ -11,252 +12,41 @@ interface NoteDetailPageProps {
   }>;
 }
 
-export default function NoteDetailPage({ params }: NoteDetailPageProps) {
-  const router = useRouter();
-  const [note, setNote] = useState<Note | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchNote = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        const resolvedParams = await params;
-        const { id } = resolvedParams;
-
-        if (!id) {
-          throw new Error("Note ID is required");
-        }
-
-        const supabase = createClient();
-        const { data, error: supabaseError } = await supabase
-          .from("notes")
-          .select("*")
-          .eq("id", id)
-          .single();
-
-        if (supabaseError || !data) {
-          console.error("Supabase error:", supabaseError);
-          throw new Error("Note not found");
-        }
-
-        setNote(data);
-      } catch (err) {
-        console.error("Fetch note error:", err);
-        setError(err instanceof Error ? err.message : "Failed to fetch note");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchNote();
-  }, [params]);
-
-  const handleBack = () => {
-    router.push("/");
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto">
-            {/* Header */}
-            <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900">
-                    Simple Notes App
-                  </h1>
-                  <p className="text-gray-600 mt-1">
-                    v1.0-initial: Traditional API Routes + fetch implementation
-                  </p>
-                </div>
-                <button
-                  onClick={handleBack}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                  Back to Notes
-                </button>
-              </div>
-            </div>
-
-            {/* Loading Content */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <div className="animate-pulse">
-                <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2 mb-6"></div>
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <div className="space-y-3">
-                    <div className="h-4 bg-gray-200 rounded"></div>
-                    <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                    <div className="h-4 bg-gray-200 rounded w-4/6"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+async function getNoteById(id: string): Promise<Note | null> {
+  const supabase = await createClient();
+  
+  const { data, error } = await supabase
+    .from('notes')
+    .select('*')
+    .eq('id', id)
+    .single();
 
   if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto">
-            {/* Header */}
-            <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                    Simple Notes App
-                  </h1>
-                  <p className="text-gray-600 dark:text-gray-400 mt-1">
-                    v1.0-initial: Traditional API Routes + fetch implementation
-                  </p>
-                </div>
-                <button
-                  onClick={handleBack}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                  Back to Notes
-                </button>
-              </div>
-            </div>
-
-            {/* Error Content */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <div className="text-center">
-                <div className="mb-4">
-                  <svg
-                    className="mx-auto h-12 w-12 text-red-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 15.5c-.77.833.192 2.5 1.732 2.5z"
-                    />
-                  </svg>
-                </div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                  Error Loading Note
-                </h2>
-                <p className="text-gray-600 mb-6">{error}</p>
-                <button
-                  onClick={handleBack}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                >
-                  Back to Notes
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    console.error('Database error:', error);
+    return null;
   }
 
-  if (!note) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto">
-            {/* Header */}
-            <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                    Simple Notes App
-                  </h1>
-                  <p className="text-gray-600 dark:text-gray-400 mt-1">
-                    v1.0-initial: Traditional API Routes + fetch implementation
-                  </p>
-                </div>
-                <button
-                  onClick={handleBack}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                  Back to Notes
-                </button>
-              </div>
-            </div>
+  return data;
+}
 
-            {/* Not Found Content */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <div className="text-center">
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                  Note Not Found
-                </h2>
-                <p className="text-gray-600 mb-6">
-                  The note you&apos;re looking for doesn&apos;t exist or has
-                  been deleted.
-                </p>
-                <button
-                  onClick={handleBack}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                >
-                  Back to Notes
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
+  const { id } = await params;
+  
+  if (!id) {
+    notFound();
+  }
+
+  const note = await getNoteById(id);
+
+  if (!note) {
+    notFound();
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          {/* Header - 統一されたデザイン */}
+          {/* Header */}
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
             <div className="flex items-center justify-between">
               <div>
@@ -264,13 +54,10 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
                   Simple Notes App
                 </h1>
                 <p className="text-gray-600 mt-1">
-                  v1.0-initial: Traditional API Routes + fetch implementation
+                  v5.0-tests-updated: Complete Server Components architecture
                 </p>
               </div>
-              <button
-                onClick={handleBack}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
-              >
+              <BackButton className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2">
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -285,7 +72,7 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
                   />
                 </svg>
                 Back to Notes
-              </button>
+              </BackButton>
             </div>
           </div>
 
