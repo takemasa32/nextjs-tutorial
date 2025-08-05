@@ -139,8 +139,11 @@ test("should navigate to note detail page when clicking on a note", async ({
   // Click on the note to navigate to detail page
   await page.click(`text=${noteContent}`);
 
-  // Verify we're on the detail page
-  await expect(page.getByText("Note Details")).toBeVisible();
+  // Wait for navigation to complete and page to load
+  await page.waitForURL(/\/notes\/\d+/);
+  
+  // Wait for the page to fully load by waiting for multiple elements
+  await expect(page.getByText("Note Details")).toBeVisible({ timeout: 10000 });
   await expect(page.getByText(noteContent)).toBeVisible();
   await expect(page.getByText("Back to Notes")).toBeVisible();
 });
@@ -159,10 +162,16 @@ test("should navigate back from note detail page", async ({ page }) => {
 
   // Navigate to detail page
   await page.click(`text=${noteContent}`);
-  await expect(page.getByText("Note Details")).toBeVisible();
+  
+  // Wait for navigation and page load
+  await page.waitForURL(/\/notes\/\d+/);
+  await expect(page.getByText("Note Details")).toBeVisible({ timeout: 10000 });
 
   // Click back button
   await page.click("text=Back to Notes");
+  
+  // Wait for navigation back to home
+  await page.waitForURL("/");
 
   // Verify we're back on the main page
   await expect(page.getByText("Simple Notes App")).toBeVisible();
