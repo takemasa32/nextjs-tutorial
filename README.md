@@ -20,18 +20,18 @@ Next.js と Supabase を用いたメモ管理アプリケーションです。�
 npm install
 ```
 
-### 2. 環境変数の設定
-
-`.env.local.example`を`.env.local`にコピーして、適切な値を設定してください。
-
-```bash
-cp .env.local.example .env.local
-```
-
 ### 3. Supabase ローカル環境の起動
 
 ```bash
-npm run supabase:start
+npx supabase start
+```
+
+### 2. 環境変数の設定
+
+`.env.local.example`を`.env.local`にコピーして、実行したローカルの supabase から適切な値を設定してください。
+
+```bash
+cp .env.local.example .env.local
 ```
 
 初回起動時に表示される URL、API KEY を`.env.local`に設定してください。
