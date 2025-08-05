@@ -159,13 +159,13 @@ test("should navigate back from note detail page", async ({ page }) => {
 
   // Navigate to detail page
   await page.click(`text=${noteContent}`);
-  
+
   // Wait for the Note Details to be visible (this means we're on the detail page)
   await expect(page.getByText("Note Details")).toBeVisible({ timeout: 10000 });
 
   // Click back button
   await page.click("text=Back to Notes");
-  
+
   // Wait for navigation back to home
   await page.waitForURL("/");
 

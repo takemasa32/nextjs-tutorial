@@ -25,7 +25,7 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
 
         const resolvedParams = await params;
         const { id } = resolvedParams;
-        
+
         if (!id) {
           throw new Error("Note ID is required");
         }
@@ -38,13 +38,13 @@ export default function NoteDetailPage({ params }: NoteDetailPageProps) {
           .single();
 
         if (supabaseError || !data) {
-          console.error('Supabase error:', supabaseError);
+          console.error("Supabase error:", supabaseError);
           throw new Error("Note not found");
         }
 
         setNote(data);
       } catch (err) {
-        console.error('Fetch note error:', err);
+        console.error("Fetch note error:", err);
         setError(err instanceof Error ? err.message : "Failed to fetch note");
       } finally {
         setIsLoading(false);
