@@ -1,15 +1,12 @@
 #!/usr/bin/env node
 /**
  * Script to clear test data from the database
- * Run with: node scripts/clear-test-data.mjs
+ * TypeScript version for better compatibility with tests
  */
 
 import { createClient } from "@supabase/supabase-js";
-import dotenv from "dotenv";
 
-dotenv.config({ path: ".env.local" });
-
-async function clearTestData() {
+export async function clearTestData() {
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
@@ -43,12 +40,4 @@ async function clearTestData() {
     console.error("Error:", error);
     process.exit(1);
   }
-}
-
-// Export the function for use in tests
-export { clearTestData };
-
-// Run the script if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  clearTestData();
 }

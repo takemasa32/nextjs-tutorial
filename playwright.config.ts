@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 // Load environment variables
 dotenv.config({ path: ".env.local" });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const baseURL = `http://localhost:${PORT}`;
 
 export default defineConfig({

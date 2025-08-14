@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import type { NoteInsert } from "@/types/utils";
+import type { NoteInsert, Note } from "@/types/utils";
 
 export async function createNote(formData: FormData) {
   const content = formData.get("content") as string;
@@ -30,4 +30,27 @@ export async function createNote(formData: FormData) {
   // キャッシュ無効化とリダイレクト
   revalidatePath("/");
   redirect("/");
+}
+
+export async function searchNotes(query: string): Promise<Note[]> {
+  // 検索クエリのバリデーション
+  if (!query?.trim()) {
+    return [];
+  }
+
+  const supabase = await createClient();
+
+  // PostgreSQLの全文検索を使用（ilike演算子で部分一致検索）
+  const { data: notes, error } = await supabase
+    .from("notes")
+    .select("*")
+    .ilike("content", `%${query.trim()}%`)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Search error:", error);
+    throw new Error("Failed to search notes");
+  }
+
+  return notes || [];
 }
