@@ -14,7 +14,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: 1,
+  workers: 1, // データベースを共有するため、並列実行を無効化
   reporter: [["html", { open: "never" }]],
   use: {
     baseURL,

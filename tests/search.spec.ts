@@ -47,7 +47,18 @@ test.describe("Note Search Functionality", () => {
 
     await page.goto("/");
 
-    // 全ノートが表示されることを確認
+    // ノートがロードされるまで待機（具体的なコンテンツを待つ）
+    await expect(
+      page.getByText(`JavaScript tips and tricks - ${timestamp}`)
+    ).toBeVisible();
+    await expect(
+      page.getByText(`React Components and Hooks - ${timestamp}`)
+    ).toBeVisible();
+    await expect(
+      page.getByText(`CSS Grid Layout Tutorial - ${timestamp}`)
+    ).toBeVisible();
+
+    // 全ノートのカウントが表示されることを確認
     await expect(page.getByText("Your Notes (3)")).toBeVisible();
 
     // 検索を実行
@@ -82,6 +93,12 @@ test.describe("Note Search Functionality", () => {
 
     await page.goto("/");
 
+    // ノートがロードされるまで待機
+    await expect(
+      page.getByText(`React Components and Hooks - ${timestamp}`)
+    ).toBeVisible();
+    await expect(page.getByText("Your Notes (1)")).toBeVisible();
+
     // 小文字で検索
     await page.fill('input[placeholder="Search notes..."]', "react");
     await page.waitForTimeout(500);
@@ -105,6 +122,12 @@ test.describe("Note Search Functionality", () => {
 
     await page.goto("/");
 
+    // ノートがロードされるまで待機
+    await expect(
+      page.getByText(`JavaScript programming tutorial - ${timestamp}`)
+    ).toBeVisible();
+    await expect(page.getByText("Your Notes (1)")).toBeVisible();
+
     // 該当しない検索
     await page.fill('input[placeholder="Search notes..."]', "Python");
     await page.waitForTimeout(500);
@@ -125,6 +148,12 @@ test.describe("Note Search Functionality", () => {
       .insert([{ content: `Test note content - ${timestamp}` }]);
 
     await page.goto("/");
+
+    // ノートがロードされるまで待機
+    await expect(
+      page.getByText(`Test note content - ${timestamp}`)
+    ).toBeVisible();
+    await expect(page.getByText("Your Notes (1)")).toBeVisible();
 
     // 検索実行
     await page.fill('input[placeholder="Search notes..."]', "test");
@@ -153,6 +182,12 @@ test.describe("Note Search Functionality", () => {
 
     await page.goto("/");
 
+    // ノートがロードされるまで待機
+    await expect(
+      page.getByText(`React Components and Hooks tutorial - ${timestamp}`)
+    ).toBeVisible();
+    await expect(page.getByText("Your Notes (1)")).toBeVisible();
+
     // 検索実行
     await page.fill('input[placeholder="Search notes..."]', "React");
     await page.waitForTimeout(500);
@@ -173,6 +208,12 @@ test.describe("Note Search Functionality", () => {
       .insert([{ content: `Test note for clearing - ${timestamp}` }]);
 
     await page.goto("/");
+
+    // ノートがロードされるまで待機
+    await expect(
+      page.getByText(`Test note for clearing - ${timestamp}`)
+    ).toBeVisible();
+    await expect(page.getByText("Your Notes (1)")).toBeVisible();
 
     // 検索実行
     await page.fill('input[placeholder="Search notes..."]', "test");
@@ -222,6 +263,18 @@ test.describe("Note Search Functionality", () => {
       ]);
 
     await page.goto("/");
+
+    // 全ノートがロードされるまで待機
+    await expect(
+      page.getByText(`JavaScript React tutorial - ${timestamp}`)
+    ).toBeVisible();
+    await expect(
+      page.getByText(`Python Django tutorial - ${timestamp}`)
+    ).toBeVisible();
+    await expect(
+      page.getByText(`React Redux pattern - ${timestamp}`)
+    ).toBeVisible();
+    await expect(page.getByText("Your Notes (3)")).toBeVisible();
 
     // "React" で検索
     await page.fill('input[placeholder="Search notes..."]', "React");
